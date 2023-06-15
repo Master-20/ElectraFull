@@ -23,7 +23,6 @@ while (exit_btn != "1"):
             password=f"{DbPass}",
         )
         print(connection)
-        print("-" * len(string2))
         print(string1)
         print("-" * len(string2))
         print(string2)
@@ -107,7 +106,6 @@ while (exit_btn != "1"):
                     exit_btn = input("Для выхода нажмите 1; Для выбора операции нажмите 2: ")
             elif op_type == "3":
                 with connection.cursor() as cursor:
-                    print('-' * len(string2))
                     table_name = input("Введите название таблицы, которую требуется отредактировать: ")
                     # забираем из БД названия и типы данных колонок
                     cursor.execute("SELECT "
@@ -138,7 +136,6 @@ while (exit_btn != "1"):
                     if choice_redact == '1':
                         # получаем новые данные, делим их по ; потому что так проще всего поделить
                         data = input('Введите новые данные через ";". Пример:\nзначение1; значение2; ...\n')
-                        print('-' * len(string2))
                         data = data.split('; ')
                         # преобразование данных типа int к данным типа int
                         # (фактическое преобразование вместо string, даты и строки не затронуты, на float не тестил)
@@ -307,7 +304,7 @@ while (exit_btn != "1"):
                         print('-' * len(string2))
                     exit_btn = input("Для выхода нажмите 1; Для выбора операции нажмите 2: ")
             elif op_type == "5":
-                print("Среднее количество покупателей за день:\n")
+                print("Среднее количество покупателей за день:")
                 with connection.cursor() as cursor:
                     cursor.execute("SELECT AVG(Number_buyers) "
                                    "AS Average_number_buys "
@@ -320,7 +317,7 @@ while (exit_btn != "1"):
                 exit_btn = input("Для выхода нажмите 1; Для выбора операции нажмите 2: ")
             elif op_type == "6":
                 number_jobs = input("Введите количество должностей, которое хотите увидеть: ")
-                print("Должности, занимающие наименьшее количество сотрудников:\n")
+                print("Должности, занимающие наименьшее количество сотрудников:")
                 with connection.cursor() as cursor:
                     cursor.execute("SELECT Название_должности AS Job_title, COUNT(*) AS Number_employees "
                                    "FROM Сотрудник  "
@@ -331,14 +328,14 @@ while (exit_btn != "1"):
                     print(table_data)
                 exit_btn = input("Для выхода нажмите 1; Для выбора операции нажмите 2: ")
             elif op_type == "7":
-                print("Средний чек заказа:\n")
+                print("Средний чек заказа:")
                 with connection.cursor() as cursor:
                     cursor.execute("SELECT AVG(Стоимость) AS Average_summ FROM Заказ;")
                     table_data = prettytable.from_db_cursor(cursor)
                     print(table_data)
                 exit_btn = input("Для выхода нажмите 1; Для выбора операции нажмите 2: ")
             elif op_type == "8":
-                print("Поставщики, товары которых представлены в наибольшем количестве в магазине:\n")
+                print("Поставщики, товары которых представлены в наибольшем количестве в магазине:")
                 with connection.cursor() as cursor:
                     cursor.execute("SELECT Поставщик.Название AS Provider_name "
                                    "FROM Поставщик JOIN ( "
