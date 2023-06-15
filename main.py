@@ -4,7 +4,11 @@ import psycopg2
 import prettytable
 
 exit_btn = ""
-string1 = "Добро пожаловать в СУБД магазина электротоваров!"
+print("Добро пожаловать в СУБД магазина электротоваров!")
+print("Авторизуйтесь для продолжения работы в системе:")
+DbName = input('Название БД: ')
+DbPass = input('Пароль: ')
+string1 = "Авторизация в системе прошла успешно."
 string2 = "Вам доступны следующие операции: Просмотр таблицы > 1; Добавление записи > 2;  Редактирование записи > 3; Удаление записи > 4."
 string3 = "Вы можете выполнить следующие аналитические запросы: Показать среднее количество покупателей за день > 5;"
 string4 = "Показать должности, занимающие наименьшее количество сотрудников > 6; Показать средний чек заказа > 7;"
@@ -15,8 +19,8 @@ while (exit_btn != "1"):
             host="localhost",
             port=5432,
             user="postgres",
-            database="Electra0",
-            password="Master",
+            database=f"{DbName}",
+            password=f"{DbPass}",
         )
         print(connection)
         print("-" * len(string2))
@@ -126,6 +130,9 @@ while (exit_btn != "1"):
                     elif table_name == 'Склад': id_table = '№_стеллажа_полки'
                     elif table_name == 'Электротовар': id_table = 'Код_товара'
                     elif table_name == 'Поставщик': id_table = 'Код_поставщика'
+                    elif table_name == 'Заказ_Электротовар': id_table = '№_заказа'
+                    elif table_name == 'Покупатель_Электротовар': id_table = '№_покупки'
+                    elif table_name == 'Поставщик_Электротовар': id_table = 'Код_поставщика'
                     choice_redact = input("Необходимо отредактировать только конкретное значение или всю строку? "
                                           "(Вся строка > 1, Конкретный столбец > 2) ")
                     if choice_redact == '1':
@@ -237,6 +244,63 @@ while (exit_btn != "1"):
                             #DONE
                         elif table_name == 'Должность':
                             cursor.execute(f"DELETE FROM Должность WHERE Название_должности = {record_id};")
+                            #DONE
+                        elif table_name == 'Заказ_Электротовар':
+                            choice = input("Если Вы ввели №_заказа, нажмите 1; Если Вы ввели Код_товара, нажмите 2: ")
+                            if choice == '1':
+                                choice1 = input("Если Вы желаете осуществить удаление записи по двум индекам, нажмите 1, иначе 2: ")
+                                if choice == '1':
+                                    record_id1 = input("Введите Код_товара: ")
+                                    cursor.execute(f"DELETE FROM Заказ_Электротовар WHERE №_заказа = {record_id} AND Код_товара = {record_id1};")
+                                else:
+                                    cursor.execute(f"DELETE FROM Заказ_Электротовар WHERE №_заказа = {record_id};")
+                                del choice, choice1
+                            else:
+                                choice1 = input("Если Вы желаете осуществить удаление записи по двум индекам, нажмите 1, иначе 2: ")
+                                if choice == '1':
+                                    record_id1 = input("Введите №_заказа: ")
+                                    cursor.execute(f"DELETE FROM Заказ_Электротовар WHERE Код_товара = {record_id} AND №_заказа = {record_id1};")
+                                else:
+                                    cursor.execute(f"DELETE FROM Заказ_Электротовар WHERE Код_товара = {record_id};")
+                                del choice, choice1
+                            #DONE
+                        elif table_name == 'Покупатель_Электротовар':
+                            choice = input("Если Вы ввели №_покупки, нажмите 1; Если Вы ввели Код_товара, нажмите 2: ")
+                            if choice == '1':
+                                choice1 = input("Если Вы желаете осуществить удаление записи по двум индекам, нажмите 1, иначе 2: ")
+                                if choice == '1':
+                                    record_id1 = input("Введите Код_товара: ")
+                                    cursor.execute(f"DELETE FROM Покупатель_Электротовар WHERE №_покупки = {record_id} AND Код_товара = {record_id1};")
+                                else:
+                                    cursor.execute(f"DELETE FROM Покупатель_Электротовар WHERE №_покупки = {record_id};")
+                                del choice, choice1
+                            else:
+                                choice1 = input("Если Вы желаете осуществить удаление записи по двум индекам, нажмите 1, иначе 2: ")
+                                if choice == '1':
+                                    record_id1 = input("Введите №_покупки: ")
+                                    cursor.execute(f"DELETE FROM Покупатель_Электротовар WHERE Код_товара = {record_id} AND №_покупки = {record_id1};")
+                                else:
+                                    cursor.execute(f"DELETE FROM Покупатель_Электротовар WHERE Код_товара = {record_id};")
+                                del choice, choice1
+                            #DONE
+                        elif table_name == 'Поставщик_Электротовар':
+                            choice = input("Если Вы ввели №_поставщика, нажмите 1; Если Вы ввели Код_товара, нажмите 2: ")
+                            if choice == '1':
+                                choice1 = input("Если Вы желаете осуществить удаление записи по двум индекам, нажмите 1, иначе 2: ")
+                                if choice == '1':
+                                    record_id1 = input("Введите Код_товара: ")
+                                    cursor.execute(f"DELETE FROM Поставщик_Электротовар WHERE №_поставщика = {record_id} AND Код_товара = {record_id1};")
+                                else:
+                                    cursor.execute(f"DELETE FROM Поставщик_Электротовар WHERE №_поставщика = {record_id};")
+                                del choice, choice1
+                            else:
+                                choice1 = input("Если Вы желаете осуществить удаление записи по двум индекам, нажмите 1, иначе 2: ")
+                                if choice == '1':
+                                    record_id1 = input("Введите №_поставщика: ")
+                                    cursor.execute(f"DELETE FROM Поставщик_Электротовар WHERE Код_товара = {record_id} AND №_поставщика = {record_id1};")
+                                else:
+                                    cursor.execute(f"DELETE FROM Поставщик_Электротовар WHERE Код_товара = {record_id};")
+                                del choice, choice1
                             #DONE
                         connection.commit()
                         print("Удаление данных завершено")
