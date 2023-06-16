@@ -74,6 +74,8 @@ while (exit_btn != "1"):
                                        "b.№_смены AS id_shift, c.№_кассы AS id_cashbox "
                                        "FROM Покупатель b "
                                        "LEFT JOIN Касса c ON b.№_смены = c.№_смены;")
+                    elif table_name == 'Заказ_Электротовар':
+                        cursor.execute("SELECT * FROM Заказ_Электротовар ORDER BY №_заказа;")
                     else:
                         cursor.execute(f"SELECT * FROM {table_name}")
                     table_data = prettytable.from_db_cursor(cursor)
@@ -112,6 +114,19 @@ while (exit_btn != "1"):
                     #Преобразование к кортежу и комит в БД
                     data_final = tuple(data)
                     cursor.execute(f"INSERT INTO {table_name}({data_places_str}) VALUES {data_final}")
+                    if table_name == 'Заказ':
+                        data1 = data[5].split(', ')
+                        # Преобразование данных типа int к данным типа int
+                        # (фактическое преобразование вместо string, даты и строки не затронуты, на float не тестил)
+                        for i in range(len(data1)):
+                            try:
+                                if not (data1[i].startswith('+') or data1[i].__contains__('-')):
+                                    data1[i] = int(data1[i])
+                            except:
+                                pass
+                        for i in range(len(data1)):
+                            cursor.execute(f"INSERT INTO Заказ_Электротовар VALUES ({data[2]}, "
+                                           f"(SELECT Код_товара FROM Электротовар WHERE Наименование = '{data1[i]}'));")
                     connection.commit()
                     print("Добавление данных завершено")
                     print('-' * len(string2))
