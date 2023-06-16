@@ -74,8 +74,18 @@ while (exit_btn != "1"):
                                        "b.№_смены AS id_shift, c.№_кассы AS id_cashbox "
                                        "FROM Покупатель b "
                                        "LEFT JOIN Касса c ON b.№_смены = c.№_смены;")
+                    elif table_name == 'Должность':
+                        cursor.execute("SELECT * FROM Должность ORDER BY Название_должности;")
+                    elif table_name == 'Склад':
+                        cursor.execute("SELECT * FROM Склад ORDER BY №_стеллажа_полки;")
+                    elif table_name == 'Стенд_проверки':
+                        cursor.execute("SELECT * FROM Стенд_проверки ORDER BY Тип_цоколя_разъема;")
                     elif table_name == 'Заказ_Электротовар':
                         cursor.execute("SELECT * FROM Заказ_Электротовар ORDER BY №_заказа;")
+                    elif table_name == 'Покупатель_Электротовар':
+                        cursor.execute("SELECT * FROM Покупатель_Электротовар ORDER BY №_покупки;")
+                    elif table_name == 'Поставщик_Электротовар':
+                        cursor.execute("SELECT * FROM Поставщик_Электротовар ORDER BY Код_поставщика;")
                     else:
                         cursor.execute(f"SELECT * FROM {table_name}")
                     table_data = prettytable.from_db_cursor(cursor)
@@ -173,7 +183,6 @@ while (exit_btn != "1"):
                                     data[i] = int(data[i])
                             except:
                                 pass
-
                         # преобразование к кортежу и комит в БД
                         data_final = tuple(data)
                         id_redacted = int(input("Введите ID записи, которую требуется изменить: "))
@@ -196,7 +205,6 @@ while (exit_btn != "1"):
                                         set_string += f"{table_data.rows[i][0]} = {data_final[i]} "
                                     else:
                                         set_string += f"{table_data.rows[i][0]} = '{data_final[i]}' "
-
                             cursor.execute(f"UPDATE {table_name} SET {set_string} WHERE {id_table} = {id_redacted}")
                             connection.commit()
                             print("Обновление данных завершено")
@@ -206,21 +214,25 @@ while (exit_btn != "1"):
                                               "(введите название с учетом регистра): ")
                         choice_id = input("Введите ID записи, которую требуется отредактировать: ")
                         data = input("Введите новые данные: ")
-                        # если на входе подразумевается строка или дата, то
-                        try:
-                            if data.startswith('+') or data.__contains__('-') or (not any(chr.isdigit() for chr in data)):
-                                data = f"'{data}'"
-                        except:
-                            pass
-                        cursor.execute(f"UPDATE {table_name} SET {choice_redact} = {data} WHERE {id_table} = {choice_id}")
-                        connection.commit()
-                        print("Обновление данных завершено")
+                        print('-' * len(string2))
+                        choice_choice = input("Вы уверены, что хотите изменить эти данные? (Да > 1, Нет > 2) ")
+                        print('-' * len(string2))
+                        if choice_choice == '1':
+                            # если на входе подразумевается строка или дата, то
+                            try:
+                                if data.startswith('+') or data.__contains__('-') or (not any(chr.isdigit() for chr in data)):
+                                    data = f"'{data}'"
+                            except:
+                                pass
+                            cursor.execute(f"UPDATE {table_name} SET {choice_redact} = {data} WHERE {id_table} = {choice_id}")
+                            connection.commit()
+                            print("Обновление данных завершено")
                     exit_btn = input("Для выхода нажмите 1; Для выбора операции нажмите 2: ")
                     del choice_redact
             elif op_type == "4":
                 with connection.cursor() as cursor:
                     table_name = input("Введите название таблицы, запись в которой требуется удалить: ")
-                    cursor.execute(f"SELECT * from {table_name}")
+                    cursor.execute(f"SELECT * FROM {table_name}")
                     rows = cursor.fetchall()
                     count = 0
                     column_names = [col[0] for col in cursor.description]
