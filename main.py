@@ -35,7 +35,7 @@ while (exit_btn != "1"):
         try:
             if op_type == "1":
                 with connection.cursor() as cursor:
-                    table_name = input("Выберите таблицу для просмотра (Электротовар, Заказ, Сотрудник): ")
+                    table_name = input("Выберите таблицу для просмотра: ")
                     if table_name == 'Электротовар':
                         cursor.execute("SELECT i.Код_товара AS id_item, i.Наименование AS item_name, "
                                        "i.Тип_товара AS category_name, i.Стоимость AS item_price, "
@@ -62,6 +62,18 @@ while (exit_btn != "1"):
                                        "j.Права AS job_rights, j.Обязанности AS job_responsibilities "
                                        "FROM Сотрудник e "
                                        "LEFT JOIN Должность j ON e.Название_должности = j.Название_должности;")
+                    elif table_name == 'Касса':
+                        cursor.execute("SELECT c.№_смены AS id_shift, c.№_кассы AS id_cashbox, "
+                                       "c.№_сотрудника AS id_employee, e.ФИО AS employee_fio "
+                                       "FROM Касса c "
+                                       "LEFT JOIN Сотрудник e ON c.№_сотрудника = e.№_сотрудника;")
+                    elif table_name == 'Покупатель':
+                        cursor.execute("SELECT b.№_покупки AS id_purchase, b.Состав_покупки AS shopping_list, "
+                                       "b.Дата_покупки AS purchase_date, b.Способ_оплаты AS payment_method, "
+                                       "b.Тип_лица AS face_type, b.№_сотрудника AS id_employee, "
+                                       "b.№_смены AS id_shift, c.№_кассы AS id_cashbox "
+                                       "FROM Покупатель b "
+                                       "LEFT JOIN Касса c ON b.№_смены = c.№_смены;")
                     else:
                         cursor.execute(f"SELECT * FROM {table_name}")
                     table_data = prettytable.from_db_cursor(cursor)
