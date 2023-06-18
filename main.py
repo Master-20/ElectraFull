@@ -339,7 +339,7 @@ while (exit_btn != "1"):
                             choice = input("Если Вы ввели №_заказа, нажмите 1; Если Вы ввели Код_товара, нажмите 2: ")
                             if choice == '1':
                                 choice1 = input("Если Вы желаете осуществить удаление записи по двум индекам, нажмите 1, иначе 2: ")
-                                if choice == '1':
+                                if choice1 == '1':
                                     record_id1 = input("Введите Код_товара: ")
                                     cursor.execute(f"DELETE FROM Заказ_Электротовар WHERE №_заказа = {record_id} AND Код_товара = {record_id1};")
                                 else:
@@ -347,7 +347,7 @@ while (exit_btn != "1"):
                                 del choice, choice1
                             else:
                                 choice1 = input("Если Вы желаете осуществить удаление записи по двум индекам, нажмите 1, иначе 2: ")
-                                if choice == '1':
+                                if choice1 == '1':
                                     record_id1 = input("Введите №_заказа: ")
                                     cursor.execute(f"DELETE FROM Заказ_Электротовар WHERE Код_товара = {record_id} AND №_заказа = {record_id1};")
                                 else:
@@ -358,7 +358,7 @@ while (exit_btn != "1"):
                             choice = input("Если Вы ввели №_покупки, нажмите 1; Если Вы ввели Код_товара, нажмите 2: ")
                             if choice == '1':
                                 choice1 = input("Если Вы желаете осуществить удаление записи по двум индекам, нажмите 1, иначе 2: ")
-                                if choice == '1':
+                                if choice1 == '1':
                                     record_id1 = input("Введите Код_товара: ")
                                     cursor.execute(f"DELETE FROM Покупатель_Электротовар WHERE №_покупки = {record_id} AND Код_товара = {record_id1};")
                                 else:
@@ -366,7 +366,7 @@ while (exit_btn != "1"):
                                 del choice, choice1
                             else:
                                 choice1 = input("Если Вы желаете осуществить удаление записи по двум индекам, нажмите 1, иначе 2: ")
-                                if choice == '1':
+                                if choice1 == '1':
                                     record_id1 = input("Введите №_покупки: ")
                                     cursor.execute(f"DELETE FROM Покупатель_Электротовар WHERE Код_товара = {record_id} AND №_покупки = {record_id1};")
                                 else:
@@ -377,7 +377,7 @@ while (exit_btn != "1"):
                             choice = input("Если Вы ввели №_поставщика, нажмите 1; Если Вы ввели Код_товара, нажмите 2: ")
                             if choice == '1':
                                 choice1 = input("Если Вы желаете осуществить удаление записи по двум индекам, нажмите 1, иначе 2: ")
-                                if choice == '1':
+                                if choice1 == '1':
                                     record_id1 = input("Введите Код_товара: ")
                                     cursor.execute(f"DELETE FROM Поставщик_Электротовар WHERE №_поставщика = {record_id} AND Код_товара = {record_id1};")
                                 else:
@@ -385,7 +385,7 @@ while (exit_btn != "1"):
                                 del choice, choice1
                             else:
                                 choice1 = input("Если Вы желаете осуществить удаление записи по двум индекам, нажмите 1, иначе 2: ")
-                                if choice == '1':
+                                if choice1 == '1':
                                     record_id1 = input("Введите №_поставщика: ")
                                     cursor.execute(f"DELETE FROM Поставщик_Электротовар WHERE Код_товара = {record_id} AND №_поставщика = {record_id1};")
                                 else:
