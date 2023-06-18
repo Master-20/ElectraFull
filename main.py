@@ -164,11 +164,11 @@ while (exit_btn != "1"):
                     print(table_data)
                     if table_name == 'Должность': id_table = 'Название_должности'
                     elif table_name == 'Сотрудник': id_table = '№_сотрудника'
-                    elif table_name == 'Касса': id_table = '№_кассы'
+                    elif table_name == 'Касса': id_table = '№_смены'
                     elif table_name == 'Покупатель ': id_table = '№_покупки'
                     elif table_name == 'Служба_доставки': id_table = '№_курьера'
                     elif table_name == 'Заказ': id_table = '№_заказа'
-                    elif table_name == 'Стенд_проверки': id_table = '№_цоколя_разъема'
+                    elif table_name == 'Стенд_проверки': id_table = 'Тип_цоколя_разъема'
                     elif table_name == 'Склад': id_table = '№_стеллажа_полки'
                     elif table_name == 'Электротовар': id_table = 'Код_товара'
                     elif table_name == 'Поставщик': id_table = 'Код_поставщика'
@@ -192,7 +192,7 @@ while (exit_btn != "1"):
                                 pass
                         # преобразование к кортежу и комит в БД
                         data_final = tuple(data)
-                        id_redacted = int(input("Введите ID записи, которую требуется изменить: "))
+                        id_redacted = input("Введите ID записи, которую требуется изменить: ")
                         print('-' * len(string2))
                         choice_choice = input("Вы уверены, что хотите изменить эти данные? (Да > 1, Нет > 2) ")
                         print('-' * len(string2))
@@ -212,7 +212,10 @@ while (exit_btn != "1"):
                                         set_string += f"{table_data.rows[i][0]} = {data_final[i]} "
                                     else:
                                         set_string += f"{table_data.rows[i][0]} = '{data_final[i]}' "
-                            cursor.execute(f"UPDATE {table_name} SET {set_string} WHERE {id_table} = {id_redacted}")
+                            if table_name == 'Должность' or table_name == 'Стенд_проверки' or table_name == 'Склад':
+                                cursor.execute(f"UPDATE {table_name} SET {set_string} WHERE {id_table} = '{id_redacted}'")
+                            else:
+                                cursor.execute(f"UPDATE {table_name} SET {set_string} WHERE {id_table} = {id_redacted}")
                             if table_name == 'Заказ':
                                 cursor.execute(f"DELETE FROM Заказ_Электротовар WHERE №_заказа = {id_redacted};")
                                 data1 = data[4].split(', ')
@@ -248,7 +251,10 @@ while (exit_btn != "1"):
                                         dubledata = f"{dubledata}"
                             except:
                                 pass
-                            cursor.execute(f"UPDATE {table_name} SET {choice_redact} = {data} WHERE {id_table} = {choice_id}")
+                            if table_name == 'Должность' or table_name == 'Стенд_проверки' or table_name == 'Склад':
+                                cursor.execute(f"UPDATE {table_name} SET {choice_redact} = {data} WHERE {id_table} = '{choice_id}'")
+                            else:
+                                cursor.execute(f"UPDATE {table_name} SET {choice_redact} = {data} WHERE {id_table} = {choice_id}")
                             if choice_redact == 'Состав_заказа':
                                 cursor.execute(f"DELETE FROM Заказ_Электротовар WHERE №_заказа = {choice_id};")
                                 data1 = dubledata.split(', ')
@@ -283,8 +289,9 @@ while (exit_btn != "1"):
                     print('-' * len(string2))
                     if del_approve == "1":
                         if table_name == 'Сотрудник':
+                            cursor.execute(f"UPDATE Покупатель SET №_смены = NULL WHERE №_смены IN (SELECT №_смены FROM Касса WHERE №_сотрудника = {record_id});")
                             cursor.execute(f"UPDATE Покупатель SET №_сотрудника = NULL WHERE №_сотрудника = {record_id};")
-                            cursor.execute(f"UPDATE Касса SET №_сотрудника = NULL WHERE №_сотрудника = {record_id};")
+                            cursor.execute(f"DELETE FROM Касса WHERE №_сотрудника = {record_id};")
                             cursor.execute(f"DELETE FROM Сотрудник WHERE №_сотрудника = {record_id};")
                             #DONE
                         elif table_name == 'Касса':
@@ -304,12 +311,12 @@ while (exit_btn != "1"):
                             cursor.execute(f"DELETE FROM Заказ WHERE №_заказа = {record_id};")
                             #DONE
                         elif table_name == 'Стенд_проверки':
-                            cursor.execute(f"UPDATE Электротовар SET Тип_цоколя_разъема = NULL WHERE Тип_цоколя_разъема = {record_id};")
-                            cursor.execute(f"DELETE FROM Стенд_проверки WHERE Тип_цоколя_разъема = {record_id};")
+                            cursor.execute(f"UPDATE Электротовар SET Тип_цоколя_разъема = NULL WHERE Тип_цоколя_разъема = '{record_id}';")
+                            cursor.execute(f"DELETE FROM Стенд_проверки WHERE Тип_цоколя_разъема = '{record_id}';")
                             #DONE
                         elif table_name == 'Склад':
-                            cursor.execute(f"UPDATE Электротовар SET №_стеллажа_полки = NULL WHERE №_стеллажа_полки = {record_id};")
-                            cursor.execute(f"DELETE FROM Склад WHERE №_стеллажа_полки = {record_id};")
+                            cursor.execute(f"UPDATE Электротовар SET №_стеллажа_полки = NULL WHERE №_стеллажа_полки = '{record_id}';")
+                            cursor.execute(f"DELETE FROM Склад WHERE №_стеллажа_полки = '{record_id}';")
                             #DONE
                         elif table_name == 'Электротовар':
                             cursor.execute(f"DELETE FROM Заказ_Электротовар WHERE Код_товара = {record_id};")
@@ -322,8 +329,11 @@ while (exit_btn != "1"):
                             cursor.execute(f"DELETE FROM Поставщик WHERE Код_поставщика = {record_id};")
                             #DONE
                         elif table_name == 'Должность':
-                            cursor.execute(f"UPDATE Сотрудник SET Название_должности = NULL WHERE Название_должности = {record_id};")
-                            cursor.execute(f"DELETE FROM Должность WHERE Название_должности = {record_id};")
+                            cursor.execute(f"UPDATE Покупатель SET №_смены = NULL WHERE №_смены IN (SELECT №_смены FROM Касса WHERE №_сотрудника IN (SELECT №_сотрудника FROM Сотрудник WHERE Название_должности = '{record_id}'));")
+                            cursor.execute(f"UPDATE Покупатель SET №_сотрудника = NULL WHERE №_сотрудника IN (SELECT №_сотрудника FROM Сотрудник WHERE Название_должности = '{record_id}');")
+                            cursor.execute(f"DELETE FROM Касса WHERE №_сотрудника IN (SELECT №_сотрудника FROM Сотрудник WHERE Название_должности = '{record_id}');")
+                            cursor.execute(f"DELETE FROM Сотрудник WHERE Название_должности = '{record_id}';")
+                            cursor.execute(f"DELETE FROM Должность WHERE Название_должности = '{record_id}';")
                             #DONE
                         elif table_name == 'Заказ_Электротовар':
                             choice = input("Если Вы ввели №_заказа, нажмите 1; Если Вы ввели Код_товара, нажмите 2: ")
